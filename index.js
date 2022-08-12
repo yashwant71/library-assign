@@ -147,5 +147,5 @@ app.get('/transaction/date/:m1/:d1/:y1/-/:m2/:d2/:y2',async(req,res)=>{
 })
 
 
-app.listen(4000)
+app.listen(process.env.PORT || 4000)
 
