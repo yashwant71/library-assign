@@ -1,8 +1,8 @@
-const path =require('path')
 require("dotenv").config()
 const express =require('express');
 const app = express();
 const mongoose =require('mongoose');
+const axiom =require('axiom')
 
 // mongoose.connect("mongodb://0.0.0.0:27017/library")
 mongoose
@@ -24,14 +24,15 @@ const bookModel =mongoose.model('book',bookSchema); //books
 //http://localhost:4000/
 
 //to add data to books collection
-app.use(express.json()); //to get body request in correct JSON format
-app.post('/key/:key',async(req,res)=>{
-    if(req.params.key==1234){//only people with this key can post data to DB
-        let data=new bookModel(req.body)
-        let result=await data.save()
-        res.send(result)
-    }
-})
+// app.use(express.json()); //to get body request in correct JSON format
+// app.post('/key/:key',async(req,res)=>{
+//     if(req.params.key==1234){//only people with this key can post data to DB
+//         let data=new bookModel(req.body)
+//         let result=await data.save()
+//         res.send(result)
+//     }
+// })
+
 
 //to search for (bookname)
 app.get('/books/:bookname',async(req,res)=>{
@@ -75,10 +76,15 @@ const transSchema =mongoose.Schema({
 
 const transModel =mongoose.model('trans',transSchema,'trans'); //trans
 
-
+app.use((req, res, next) => {
+    res.append('Access-Control-Allow-Origin', ['*']);
+    res.append('Access-Control-Allow-Methods', 'POST');
+    res.append('Access-Control-Allow-Headers', 'Content-Type');
+    next();
+});
 app.post('/transaction/:bookname/:personname/:m/:d/:y',async(req,res)=>{
     var dateof =req.params.m+"/"+req.params.d+"/"+req.params.y;//string mm/dd/yyyy
-
+    
     const checkname=await bookModel.find({"name":{$regex:req.params.bookname}}); //GETTING THE BOOK DATA FROM BOOKS LIBRARY
     
     if(checkname.length>0){//IF BOOK EXIST
@@ -99,6 +105,12 @@ app.post('/transaction/:bookname/:personname/:m/:d/:y',async(req,res)=>{
         res.send("book does not exist")
     }
 })
+app.use((req, res, next) => {
+    res.append('Access-Control-Allow-Origin', ['*']);
+    res.append('Access-Control-Allow-Methods', 'GET');
+    res.append('Access-Control-Allow-Headers', 'Content-Type');
+    next();
+});
 //TO GET ALL THE BOOKS THAT HAVE NOT RETURNED YET
 app.get('/transaction/:bookname',async(req,res)=>{
     const data =await transModel.find({"$and":[{"isReturned":false},{"name":{$regex:req.params.bookname}}]})
