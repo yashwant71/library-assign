@@ -82,7 +82,7 @@ app.use((req, res, next) => {
     res.append('Access-Control-Allow-Headers', 'Content-Type');
     next();
 });
-app.post('/transaction/:bookname/:personname/:m/:d/:y',async(req,res)=>{
+app.get('/transaction/:bookname/:personname/:m/:d/:y',async(req,res)=>{
     var dateof =req.params.m+"/"+req.params.d+"/"+req.params.y;//string mm/dd/yyyy
     
     const checkname=await bookModel.find({"name":{$regex:req.params.bookname}}); //GETTING THE BOOK DATA FROM BOOKS LIBRARY
