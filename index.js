@@ -2,8 +2,9 @@ require("dotenv").config()
 const express =require('express');
 const app = express();
 const mongoose =require('mongoose');
-
+const cors = require('cors')
 // mongoose.connect("mongodb://0.0.0.0:27017/library")
+app.use(cors())
 mongoose
     .connect(process.env.DATABASE,{
         useNewUrlParser:true,
