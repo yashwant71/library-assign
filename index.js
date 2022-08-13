@@ -76,12 +76,6 @@ const transSchema =mongoose.Schema({
 
 const transModel =mongoose.model('trans',transSchema,'trans'); //trans
 
-app.use((req, res, next) => {
-    res.append('Access-Control-Allow-Origin', ['*']);
-    res.append('Access-Control-Allow-Methods', 'POST');
-    res.append('Access-Control-Allow-Headers', 'Content-Type');
-    next();
-});
 app.get('/transaction/:bookname/:personname/:m/:d/:y',async(req,res)=>{
     var dateof =req.params.m+"/"+req.params.d+"/"+req.params.y;//string mm/dd/yyyy
     
@@ -105,12 +99,6 @@ app.get('/transaction/:bookname/:personname/:m/:d/:y',async(req,res)=>{
         res.send("book does not exist")
     }
 })
-app.use((req, res, next) => {
-    res.append('Access-Control-Allow-Origin', ['*']);
-    res.append('Access-Control-Allow-Methods', 'GET');
-    res.append('Access-Control-Allow-Headers', 'Content-Type');
-    next();
-});
 //TO GET ALL THE BOOKS THAT HAVE NOT RETURNED YET
 app.get('/transaction/:bookname',async(req,res)=>{
     const data =await transModel.find({"$and":[{"isReturned":false},{"name":{$regex:req.params.bookname}}]})
